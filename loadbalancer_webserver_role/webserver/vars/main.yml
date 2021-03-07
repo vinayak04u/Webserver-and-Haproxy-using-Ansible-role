@@ -1,0 +1,12 @@
+---
+# vars file for webserver
+#
+x: 
+  - httpd
+  - php
+
+username: vaibhav
+password: sonu
+
+httpdpasswdfile: "/var/www/html/.htaccess"
+

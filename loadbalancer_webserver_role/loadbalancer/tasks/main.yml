@@ -1,0 +1,15 @@
+---
+# tasks file for loadbalancer
+
+- package:
+        name: "{{ package_name }}"
+        state: present
+
+- template:
+        dest: "/etc/haproxy/haproxy.cfg"
+        src: haproxy.cfg
+  notify: restart
+
+- service:
+        name: "{{ package_name }}"
+        state: started

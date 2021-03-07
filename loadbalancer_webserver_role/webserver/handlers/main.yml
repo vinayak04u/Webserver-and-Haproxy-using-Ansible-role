@@ -1,0 +1,14 @@
+---
+# handlers file for webserver
+#
+- name: installation
+  service:
+          name: httpd
+          state: started
+
+- name: restart
+  service:
+          name: httpd
+          state: restarted
+
+

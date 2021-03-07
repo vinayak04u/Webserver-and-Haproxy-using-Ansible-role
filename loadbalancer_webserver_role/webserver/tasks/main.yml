@@ -1,0 +1,63 @@
+---
+# tasks file for webserver
+
+- package:
+        name:  "{{ item }}"
+        state: present
+
+  loop:
+          "{{ x  }}"
+
+- copy: 
+       dest: /var/www/html/
+       src: index.php     
+
+- service:
+        name: httpd
+        state: started
+
+- replace:
+        dest: "/etc/httpd/conf/httpd.conf"
+        regexp: AllowOveride None
+        replace: AllowOveride AuthConfig
+  notify: restart
+
+- block:
+  - file:
+        path: /etc/www.passwd
+        state: file
+
+  rescue:
+  - file:
+        path: /etc/www.passwd
+        state: touch
+
+- block:
+  - file:
+        path: "{{  httpdpasswdfile }}"
+        state: file
+  rescue:
+  - file:
+        path:  "{{  httpdpasswdfile }}"
+        state: touch
+
+- blockinfile:
+       path: "{{ httpdpasswdfile }}"
+       block:
+            AuthName "HKM"
+            AuthType basic
+            AuthUserFile  "/etc/www.passwd"
+            Require valid-user      
+  ignore_errors: true
+
+- block:        
+  - htpasswd:
+        path: /etc/www.passwd
+        name: "{{ username }}"
+        password: "{{ password }}" 
+    notify: restart
+  rescue:
+  - debug: 
+         msg: "User and Password exist"
+
+
